@@ -1,0 +1,15 @@
+{
+    "angular.forceStrictTemplates": true,
+    "editor.defaultFormatter": "vscode.typescript-language-features",
+    "remote.portsAttributes": {
+        "443": {
+            "protocol": "https"
+        },
+        "8443": {
+            "protocol": "https"
+        }
+    },
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    }
+}
