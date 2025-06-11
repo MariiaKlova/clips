@@ -1,6 +1,10 @@
 import { Component, AfterContentInit, ContentChildren, QueryList } from '@angular/core';
 import { TabComponent } from '../tab/tab.component';
-import { filter } from 'rxjs';
+
+interface Tab {
+  tabTitle: string;
+  active: boolean;
+}
 
 @Component( {
   selector: 'app-tabs-container',
@@ -8,9 +12,11 @@ import { filter } from 'rxjs';
   templateUrl: './tabs-container.component.html',
   styleUrl: './tabs-container.component.css'
 } )
+
 export class TabsContainerComponent implements AfterContentInit {
 
   @ContentChildren( TabComponent ) tabs: QueryList<TabComponent> = new QueryList()
+
 
   constructor () { }
 
@@ -19,16 +25,22 @@ export class TabsContainerComponent implements AfterContentInit {
       tab => tab.active
     )
     if ( !activeTabs || activeTabs.length === 0 ) {
-      this.selectTab(this.tabs!.first)
+      this.selectTab( this.tabs!.first )
     }
   }
 
-  selectTab(tab: TabComponent){
-    this.tabs?.forEach(tab =>{
+  selectTab ( tab: TabComponent ) {
+    this.tabs?.forEach( tab => {
       tab.active = false
-    })
-    
-    tab.active = true
+    } )
 
+    tab.active = true
+    return false
+  }
+
+  getTabClasses ( tab: Tab ): string {
+    const active = 'text-white bg-indigo-400 hover:text-white';
+    const inactive = 'hover:text-indigo-400 text-white';
+    return `${ tab.active ? active : inactive }`;
   }
 }
