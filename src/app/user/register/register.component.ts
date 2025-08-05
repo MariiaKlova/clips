@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { log } from 'console';
 
 @Component({
@@ -11,6 +12,7 @@ import { log } from 'console';
 
 
 export class RegisterComponent {
+  constructor(private auth: AngularFireAuth) { }
 
   name = new FormControl('', [
     Validators.required,
@@ -27,12 +29,12 @@ export class RegisterComponent {
   ]);
   password = new FormControl('', [
     Validators.required,
-    Validators.pattern( /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/)
+    Validators.pattern(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/)
   ]);
   confirm_password = new FormControl('', [
     Validators.required
   ]);
-  phoneNumber = new FormControl('',[
+  phoneNumber = new FormControl('', [
     Validators.required,
     Validators.minLength(13),
     Validators.maxLength(13),
@@ -50,14 +52,31 @@ export class RegisterComponent {
   showAlert = false;
   alertMsg = 'Success!';
   alertColor = 'blue'
+  inSubmission = false
 
-  register(){
+  async register() {
     this.showAlert = true;
     this.alertMsg = 'Please wait! Your account is being created.'
     this.alertColor = 'blue'
-  }
+    this.inSubmission = true
 
-  constructor() {
+    const { email, password } = this.registerForm.value
 
+    try {
+      const userCred = await this.auth.createUserWithEmailAndPassword(
+        email as string, password as string
+      )
+      console.log(userCred);
+    }
+    catch (e) {
+      console.error(e);
+      this.alertMsg = 'An unexpected error occured. Please try again later.'
+      this.alertColor = 'red'
+      this.inSubmission = false
+      return
+    }
+    this.alertMsg = 'Success! Your accounthas been created.'
+    this.alertColor = 'green'
   }
+  
 }
