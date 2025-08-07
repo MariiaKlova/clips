@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { log } from 'console';
+import { AuthService } from '../../servises/auth.service';
+import IUser from '../../models/user.model'
 
 @Component({
   selector: 'app-register',
@@ -10,9 +10,10 @@ import { log } from 'console';
   styleUrl: './register.component.css'
 })
 
-
 export class RegisterComponent {
-  constructor(private auth: AngularFireAuth) { }
+  constructor(
+   private auth: AuthService,
+  ) { }
 
   name = new FormControl('', [
     Validators.required,
@@ -22,7 +23,7 @@ export class RegisterComponent {
     Validators.required,
     Validators.email,
   ]);
-  age = new FormControl('', [
+  age = new FormControl<number | null>(null, [
     Validators.required,
     Validators.min(18),
     Validators.max(120),
@@ -54,19 +55,25 @@ export class RegisterComponent {
   alertColor = 'blue'
   inSubmission = false
 
+  private getUserFromForm(): IUser {
+    return {
+      name: this.name.value!,
+      email: this.email.value!,
+      age: this.age.value!, 
+      password: this.password.value!,
+      phoneNumber: this.phoneNumber.value!
+    };
+  }
+
   async register() {
     this.showAlert = true;
     this.alertMsg = 'Please wait! Your account is being created.'
     this.alertColor = 'blue'
     this.inSubmission = true
-
-    const { email, password } = this.registerForm.value
-
+ 
     try {
-      const userCred = await this.auth.createUserWithEmailAndPassword(
-        email as string, password as string
-      )
-      console.log(userCred);
+      
+      await this.auth.createUser(this.getUserFromForm());
     }
     catch (e) {
       console.error(e);
@@ -78,5 +85,16 @@ export class RegisterComponent {
     this.alertMsg = 'Success! Your accounthas been created.'
     this.alertColor = 'green'
   }
-  
+
+  ngOnInit() {
+    this.registerForm.setValue({
+      name: 'TestUser',
+      email: 'test@test.com',
+      age: 20,
+      password: '111qqqAAA',
+      confirm_password: '111qqqAAA',
+      phoneNumber: '1234567890123',
+    });
+
+  }
 }

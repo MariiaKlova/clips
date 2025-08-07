@@ -5,9 +5,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { UserModule } from './user/user.module';
 import { NavComponent } from './nav/nav.component';
-import { AngularFireModule} from '@angular/fire/compat';
 import { environment} from '../environments/environment';
-import { AngularFireAuthModule} from '@angular/fire/compat/auth';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 
 
 @NgModule({
@@ -19,11 +20,12 @@ import { AngularFireAuthModule} from '@angular/fire/compat/auth';
     BrowserModule,
     AppRoutingModule,
     UserModule,
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFireAuthModule
   ],
   providers: [
-    provideClientHydration(withEventReplay())
+    provideAuth(() => getAuth()),
+    provideClientHydration(withEventReplay()),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideFirestore(() => getFirestore())
   ],
   bootstrap: [AppComponent]
 })

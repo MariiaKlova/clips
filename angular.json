@@ -10,6 +10,9 @@
           "standalone": false,
           "skipTests": true
         },
+        "@schematics/angular:service": {
+          "skipTests": true
+        },
         "@schematics/angular:directive": {
           "standalone": false,
           "skipTests": true
@@ -17,6 +20,7 @@
         "@schematics/angular:pipe": {
           "standalone": false
         }
+        
       },
       "root": "",
       "sourceRoot": "src",
