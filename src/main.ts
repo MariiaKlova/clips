@@ -1,20 +1,18 @@
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
-import firedbase from 'firebase/compat/app';
-import 'firebase/compat/auth';
 
-firedbase.initializeApp(environment.firebase)
+import { initializeApp } from 'firebase/app';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
-let appInit = false
+const app = initializeApp(environment.firebase);
+const auth = getAuth(app);
 
-firedbase.auth().onAuthStateChanged(() => {
-  if (!appInit) {
+
+onAuthStateChanged(auth, () => {
     platformBrowserDynamic()
-      .bootstrapModule(AppModule, { ngZoneEventCoalescing: true, })
+      .bootstrapModule(AppModule, { ngZoneEventCoalescing: true })
       .catch(err => console.error(err));
-  }
-  appInit = true
-})
+});
 
 
