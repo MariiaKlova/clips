@@ -16,7 +16,7 @@ export class AuthService {
     private auth: Auth,
     private db: Firestore
   ) { 
-    this.isAuthenticated$ = authState(this.auth).pipe(map(user => !!user)) 
+   this.isAuthenticated$ = authState(this.auth).pipe(map(user => !!user)) 
   }
 
   public async createUser(userData: IUser) {
