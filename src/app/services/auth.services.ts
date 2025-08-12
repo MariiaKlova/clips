@@ -16,10 +16,10 @@ export class AuthService {
   constructor(
     private auth: Auth,
     private db: Firestore
-  ) { 
+  ) {
     this.isAuthenticated$ = authState(this.auth).pipe(
       map(user => !!user)
-    ) 
+    )
     this.isAuthentifacetedWithDelay$ = this.isAuthenticated$.pipe(
       delay(1000)
     )
