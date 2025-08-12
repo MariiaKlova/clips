@@ -18,8 +18,7 @@ export class ModalService {
     this.modals.push({
       id,
       visible: false
-    })
-    
+    }) 
   }
   
   unregister(id:string){
@@ -38,5 +37,4 @@ export class ModalService {
       modal.visible = !modal.visible
     }
   }
-  
 }

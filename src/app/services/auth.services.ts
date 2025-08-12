@@ -3,7 +3,7 @@ import { Auth, createUserWithEmailAndPassword } from '@angular/fire/auth';
 import { Firestore, setDoc, doc } from '@angular/fire/firestore';
 import { authState } from '@angular/fire/auth';
 import IUser from '../models/user.model'
-import { Observable, map } from 'rxjs';
+import { Observable, delay, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,12 +11,18 @@ import { Observable, map } from 'rxjs';
 
 export class AuthService {
   public isAuthenticated$: Observable<boolean>;
+  public isAuthentifacetedWithDelay$: Observable<boolean>;
 
   constructor(
     private auth: Auth,
     private db: Firestore
   ) { 
-    this.isAuthenticated$ = authState(this.auth).pipe(map(user => !!user)) 
+    this.isAuthenticated$ = authState(this.auth).pipe(
+      map(user => !!user)
+    ) 
+    this.isAuthentifacetedWithDelay$ = this.isAuthenticated$.pipe(
+      delay(1000)
+    )
   }
 
   public async createUser(userData: IUser) {
