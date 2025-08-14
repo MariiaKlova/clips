@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.services';
 import { RegisterValidators } from '../validators/register-validators';
 import IUser from '../../models/user.model'
+import { EmailTaken } from '../validators/email-taken';
 
 @Component({
   selector: 'app-register',
@@ -14,6 +15,7 @@ import IUser from '../../models/user.model'
 export class RegisterComponent {
   constructor(
    private auth: AuthService,
+   private emailTaken: EmailTaken
   ) { }
 
   name = new FormControl('', [
@@ -23,7 +25,7 @@ export class RegisterComponent {
   email = new FormControl('', [
     Validators.required,
     Validators.email,
-  ]);
+  ], [(control) => this.emailTaken.validate(control)]);
   age = new FormControl<number | null>(null, [
     Validators.required,
     Validators.min(18),
@@ -73,7 +75,6 @@ export class RegisterComponent {
     this.inSubmission = true
  
     try {
-      
       await this.auth.createUser(this.getUserFromForm());
     }
     catch (e) {
@@ -87,14 +88,4 @@ export class RegisterComponent {
     this.alertColor = 'green'
   }
 
-  // ngOnInit() {
-  //   this.registerForm.setValue({
-  //     name: 'TestUser',
-  //     email: 'test@test.com',
-  //     age: 20,
-  //     password: '111qqqAAA',
-  //     confirm_password: '111qqqAAA',
-  //     phoneNumber: '1234567890123',
-  //   });
-  // }
 }

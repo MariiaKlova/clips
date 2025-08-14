@@ -25,4 +25,7 @@
     <p *ngIf="control.errors?.notMatch" class="text-red-400">
         Password do not match.
     </p>
+    <p *ngIf="control.errors?.emailTaken" class="text-red-400">
+        Email taken. Please try another email.
+    </p>
 </ng-container>
