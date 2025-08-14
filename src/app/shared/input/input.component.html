@@ -6,7 +6,6 @@
      <p *ngIf="control.errors?.pattern" class="text-red-400">
        Password must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number.
     </p>
-
     <p *ngIf="control.errors?.required" class="text-red-400">
         Field is required
     </p>
@@ -23,5 +22,7 @@
     <p *ngIf="control.errors?.max" class="text-red-400">
         Value too high.
     </p>
-
+    <p *ngIf="control.errors?.notMatch" class="text-red-400">
+        Password do not match.
+    </p>
 </ng-container>

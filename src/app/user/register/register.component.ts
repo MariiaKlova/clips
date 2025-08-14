@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.services';
+import { RegisterValidators } from '../validators/register-validators';
 import IUser from '../../models/user.model'
 
 @Component({
@@ -48,7 +49,7 @@ export class RegisterComponent {
     password: this.password,
     confirm_password: this.confirm_password,
     phoneNumber: this.phoneNumber,
-  })
+  }, [RegisterValidators.match('password', 'confirm_password')])
 
   showAlert = false;
   alertMsg = 'Success!';
@@ -86,15 +87,14 @@ export class RegisterComponent {
     this.alertColor = 'green'
   }
 
-  ngOnInit() {
-    this.registerForm.setValue({
-      name: 'TestUser',
-      email: 'test@test.com',
-      age: 20,
-      password: '111qqqAAA',
-      confirm_password: '111qqqAAA',
-      phoneNumber: '1234567890123',
-    });
-
-  }
+  // ngOnInit() {
+  //   this.registerForm.setValue({
+  //     name: 'TestUser',
+  //     email: 'test@test.com',
+  //     age: 20,
+  //     password: '111qqqAAA',
+  //     confirm_password: '111qqqAAA',
+  //     phoneNumber: '1234567890123',
+  //   });
+  // }
 }
