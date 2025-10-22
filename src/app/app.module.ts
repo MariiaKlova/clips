@@ -9,6 +9,7 @@ import { environment} from '../environments/environment';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { provideStorage, getStorage } from '@angular/fire/storage';
 import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 import { VideoModule } from './video/video.module';
@@ -24,6 +25,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
     AboutComponent,
     ClipComponent,
     NotFoundComponent
+    
   ],
   imports: [
     BrowserModule,
@@ -35,7 +37,8 @@ import { NotFoundComponent } from './not-found/not-found.component';
     provideAuth(() => getAuth()),
     provideClientHydration(withEventReplay()),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(() => getFirestore())
+    provideFirestore(() => getFirestore()),
+    provideStorage(() => getStorage()) 
   ],
   bootstrap: [AppComponent]
 })
