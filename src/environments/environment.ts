@@ -1,11 +1,11 @@
 export const environment = {
   production: true,
   firebase: {
-    apiKey: "AIzaSyDkSlsPfZJswHAMbYjZLmWp7erdKMH9fq8",
-    authDomain: "clips-fc0db.firebaseapp.com",
-    projectId: "clips-fc0db",
-    storageBucket: "clips-fc0db.firebasestorage.app",
-    messagingSenderId: "340488156149",
-    appId: "1:340488156149:web:603523e9ac82807491e6bc"
+    apiKey: "AIzaSyDCagLS40K5gqV-2zcejM9tAhxuXyIs1LM",
+    authDomain: "clips-e5089.firebaseapp.com",
+    projectId: "clips-e5089",
+    storageBucket: "clips-e5089.firebasestorage.app",
+    messagingSenderId: "735270670397",
+    appId: "1:735270670397:web:938782ea301af7176cda54"
   }
 };
