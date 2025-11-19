@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, signOut } from '@angular/fire/auth';
 import { Firestore, setDoc, doc } from '@angular/fire/firestore';
 import { authState } from '@angular/fire/auth';
+import { updateProfile } from 'firebase/auth';
 import IUser from '../models/user.model'
 import { Observable, delay, map, filter, switchMap, of} from 'rxjs';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
@@ -41,10 +42,15 @@ export class AuthService {
     const userCred = await createUserWithEmailAndPassword(
       this.auth,
       userData.email as string,
-      userData.password as string
+      userData.password as string,
     );
 
     if (userCred.user) {
+      
+      await updateProfile(userCred.user, {
+        displayName: userData.name   // імʼя з моделі IUser
+      });
+
       await setDoc(
         doc(this.db, 'users', userCred.user.uid),
         {
