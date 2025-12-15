@@ -48,15 +48,16 @@ export class AuthService {
     if (userCred.user) {
       
       await updateProfile(userCred.user, {
-        displayName: userData.name   // імʼя з моделі IUser
+        displayName: userData.name
       });
 
       await setDoc(
         doc(this.db, 'users', userCred.user.uid),
         {
-          ...userData,
           uid: userCred.user.uid,
-          createdAt: new Date()
+          email: userData.email,
+          name: userData.name,
+          createdAt: new Date(),
         }
       );
     }

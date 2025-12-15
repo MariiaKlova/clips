@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Storage, uploadBytesResumable, ref, getDownloadURL } from '@angular/fire/storage';
+import { UploadTask } from 'firebase/storage';
 import { Auth, user  } from '@angular/fire/auth';
 import { User } from 'firebase/auth';
 import { v4 as uuid } from 'uuid'
+import { ClipService } from '../../services/clip.service';
 
 @Component({
   selector: 'app-upload',
@@ -12,7 +14,7 @@ import { v4 as uuid } from 'uuid'
   styleUrl: './upload.component.css'
 })
 
-export class UploadComponent implements OnInit {
+export class UploadComponent implements OnDestroy {
 
   isDragover = false;
   file: File | null = null;
@@ -24,6 +26,8 @@ export class UploadComponent implements OnInit {
   percentage = 0
   showPercentage = false;
   user: User | null = null;
+  task?: UploadTask;
+  
 
 
   title = new FormControl('', [
@@ -37,20 +41,23 @@ export class UploadComponent implements OnInit {
 
   constructor(
     private storage: Storage, 
-    private auth: Auth
+    private auth: Auth,
+    private ClipService: ClipService
   ) { 
     user(this.auth).subscribe(u => this.user = u);
   }
+  ngOnDestroy(): void {
+    this.task?.cancel()
+  }
 
-  ngOnInit(): void {}
-
-  public storeFile($event: Event) {
-
+  storeFile($event: Event) {
     this.isDragover = false;
 
-    this.file = ($event as unknown as DragEvent).dataTransfer?.files.item(0) ?? null;
+    this.file = ($event as unknown as DragEvent).dataTransfer ? 
+    ($event as unknown as DragEvent).dataTransfer?.files.item(0) ?? null :
+    ($event.target as HTMLInputElement).files?.item(0) ?? null;
+
     if (!this.file || this.file.type !== 'video/mp4') {
-      alert('File must be a video/mp4')
       return;
     }
 
@@ -58,8 +65,9 @@ export class UploadComponent implements OnInit {
     this.nextStep = true;
   }
   
-
   uploadFile() {
+    this.uploadForm.disable();
+
     this.showAlert = true;
     this.alertMsg = 'Uploading...';
     this.alertColor = 'blue';
@@ -69,14 +77,16 @@ export class UploadComponent implements OnInit {
     const clipPath = `clips/${clipFileName}.mp4`;
     const storageRef = ref(this.storage, clipPath);
 
-    const task = uploadBytesResumable(storageRef, this.file!);
+    this.task = uploadBytesResumable(storageRef, this.file!);
 
-    task.on('state_changed',
+    this.task.on('state_changed',
       (snapshot) => {
         this.percentage = snapshot.bytesTransferred / snapshot.totalBytes;
         this.showPercentage = true;
       },
       (error) => {
+        this.uploadForm.enable();
+        
         this.alertMsg = 'Upload failed!';
         this.alertColor = 'red';
         this.inSubmission = false;
@@ -86,12 +96,14 @@ export class UploadComponent implements OnInit {
       async () => {
         const url = await getDownloadURL(storageRef);
         const clip = {
-          uid: this.user?.uid,
-          displayName: this.user?.displayName,
+          uid: this.user?.uid as string,
+          displayName: this.user?.displayName as string,
           title: this.title.value as string,
           fileName: `${clipFileName}.mp4`,
           url
         }
+
+        this.ClipService.createClip(clip);
 
         console.log("Clip object:", clip);
 
